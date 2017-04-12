@@ -1,0 +1,6 @@
+package: github.com/mike-dunton/menuCreater
+import:
+- package: gopkg.in/mgo.v2/bson
+- package: gopkg.in/mgo.v2
+- package: github.com/Sirupsen/logrus
+- package: github.com/gin-gonic/gin
