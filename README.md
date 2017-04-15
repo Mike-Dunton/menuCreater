@@ -1,4 +1,4 @@
-# MenuCreater
+# MenuCreator
 ===================
 
 ## Running
