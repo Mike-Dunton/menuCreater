@@ -1,11 +1,11 @@
 package recipeModel
 
 type RecipeIngredients struct {
-	Name       string `json:"name"`
-	IsOptional bool   `json:"isOptional"`
+	Name       string `bson:"name" json:"name" validate:"nonzero"`
+	IsOptional bool   `bson:"isOptional" json:"isOptional"`
 }
 
 type Recipe struct {
-	Name        string              `json:"name"`
-	Ingredients []RecipeIngredients `json:"ingredients"`
+	Name        string              `bson:"name" json:"name" validate:"nonzero"`
+	Ingredients []RecipeIngredients `bson:"ingredients" json:"ingredients" validate:"min=1"`
 }

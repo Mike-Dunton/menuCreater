@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/mike-dunton/menuCreater/mongo"
+	"github.com/mike-dunton/menuCreator/mongo"
 	"gopkg.in/mgo.v2"
 )
 
@@ -11,10 +11,6 @@ type (
 	}
 )
 
-func (service *Service) DBAction(databaseName string, collectionName string, ExecuteFunction mongo.DBCall) (err error) {
-	err = ExecuteFunction(&mgo.Collection{})
-	if err != nil {
-		return err
-	}
-	return nil
+func (service *Service) DBAction(databaseName string, collectionName string, executeFunction mongo.DBCall) (err error) {
+	return mongo.Execute(service.MongoSession, databaseName, collectionName, executeFunction)
 }

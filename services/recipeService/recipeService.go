@@ -1,10 +1,8 @@
 package recipeService
 
 import (
-	"encoding/json"
-
-	"github.com/mike-dunton/menuCreater/models/recipe"
-	"github.com/mike-dunton/menuCreater/services"
+	"github.com/mike-dunton/menuCreator/models/recipe"
+	"github.com/mike-dunton/menuCreator/services"
 	"gopkg.in/mgo.v2"
 
 	"github.com/Sirupsen/logrus"
@@ -22,10 +20,8 @@ type (
 
 var Config recipeConfiguration
 
-var mockRecipes = []byte("[{\"id\":\"123\",\"name\":\"Recipe1\",\"ingredients\":[{\"name\":\"Ingredient1\",\"isOptional\":false}]},{\"id\":\"321\",\"name\":\"Recipe2\",\"ingredients\":[{\"name\":\"Ingredient3\",\"isOptional\":false}]}]")
-
 func init() {
-	Config.Database = "menuCreater"
+	Config.Database = "menuCreator"
 	Config.Collection = "recipes"
 }
 
@@ -35,8 +31,7 @@ func ListRecipes(service *services.Service) (*[]recipeModel.Recipe, error) {
 	var recipes []recipeModel.Recipe
 	executeFunc := func(collection *mgo.Collection) error {
 		log.Info("Getting Recipes")
-		//return collection.Find(nil).All(&recipes)
-		return json.Unmarshal(mockRecipes, &recipes)
+		return collection.Find(nil).All(&recipes)
 	}
 
 	if err := service.DBAction(Config.Database, Config.Collection, executeFunc); err != nil {
@@ -49,23 +44,14 @@ func ListRecipes(service *services.Service) (*[]recipeModel.Recipe, error) {
 	return &recipes, nil
 }
 
-func AddRecipe(service *services.Service, newRecipe recipeModel.Recipe) (*recipeModel.Recipe, error) {
+func AddRecipe(service *services.Service, newRecipe recipeModel.Recipe) (*[]recipeModel.Recipe, error) {
 	executeFunc := func(collection *mgo.Collection) error {
-		//Insert New Recipe
-		return nil
+		return collection.Insert(newRecipe)
 	}
 
 	if err := service.DBAction(Config.Database, Config.Collection, executeFunc); err != nil {
 		return nil, err
 	}
 	log.Info("Recipe Added")
-	return &recipeModel.Recipe{
-		Name: "Fake",
-		Ingredients: []recipeModel.RecipeIngredients{
-			recipeModel.RecipeIngredients{
-				Name:       "FakeIngredient1",
-				IsOptional: false,
-			},
-		},
-	}, nil
+	return ListRecipes(service)
 }

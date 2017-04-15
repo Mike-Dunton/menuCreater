@@ -1,12 +1,10 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
-
-	"github.com/mike-dunton/menuCreater/mongo"
-	"github.com/mike-dunton/menuCreater/services"
-	recipe "github.com/mike-dunton/menuCreater/services/recipeService"
+	recipeModel "github.com/mike-dunton/menuCreator/models/recipe"
+	"github.com/mike-dunton/menuCreator/mongo"
+	"github.com/mike-dunton/menuCreator/services"
+	recipe "github.com/mike-dunton/menuCreator/services/recipeService"
 )
 
 type (
@@ -16,12 +14,14 @@ type (
 	}
 )
 
-func (recipeController *RecipeController) ListRecipes() (int, string, error) {
+func (recipeController *RecipeController) ListRecipes() (int, *[]recipeModel.Recipe, error) {
 	recipes, err := recipe.ListRecipes(&recipeController.Service)
-	fmt.Println(recipes)
-	fmt.Println(err)
-	result, err := json.Marshal(recipes)
-	return 200, string(result), nil
+	return 200, recipes, err
+}
+
+func (recipeController *RecipeController) NewRecipe(newRecipe recipeModel.Recipe) (int, *[]recipeModel.Recipe, error) {
+	recipes, err := recipe.AddRecipe(&recipeController.Service, newRecipe)
+	return 200, recipes, err
 }
 
 func (recipe *RecipeController) NewController() (err error) {

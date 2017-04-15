@@ -1,25 +1,34 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/mike-dunton/menuCreater/mongo"
-	"github.com/mike-dunton/menuCreater/routes"
+	"github.com/mike-dunton/menuCreator/mongo"
+	"github.com/mike-dunton/menuCreator/routes"
 	"gopkg.in/mgo.v2"
 )
 
 var log = logrus.New()
-var MongoDialString string
+var connectionConfig mongo.ConnectionConfig
+
 var MongoSession mgo.Session
 
 func init() {
-	MongoDialString = os.Getenv("MENU_CREATOR_MONGO_DIAL_STRING")
+	connectionConfig = mongo.ConnectionConfig{
+		DBAddrs: strings.Split(os.Getenv("MENU_CREATOR_MONGO_DB_ADDRS"), ","),
+		AuthDB:  os.Getenv("MENU_CREATOR_MONGO_AUTH_DB"),
+		User:    os.Getenv("MENU_CREATOR_MONGO_USER"),
+		Pass:    os.Getenv("MENU_CREATOR_MONGO_PASS"),
+	}
 }
 
 func main() {
 	log.Info("Starting...")
-	err := mongo.Start(MongoDialString)
+	log.Infof("Dial String %v", connectionConfig)
+	err := mongo.Start(connectionConfig)
 	if err != nil {
 		fmt.Printf("There was an error starting the mongo connection: %v\n", err)
 		os.Exit(1)
