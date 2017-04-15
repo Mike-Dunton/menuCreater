@@ -3,6 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/mike-dunton/menuCreater/mongo"
 	"github.com/mike-dunton/menuCreater/services"
 	recipe "github.com/mike-dunton/menuCreater/services/recipeService"
 )
@@ -22,6 +24,7 @@ func (recipeController *RecipeController) ListRecipes() (int, string, error) {
 	return 200, string(result), nil
 }
 
-func (recipe *RecipeController) NewController(MongoSessionString string) {
-	recipe.Service.MongoSession = MongoSessionString
+func (recipe *RecipeController) NewController() (err error) {
+	recipe.Service.MongoSession, err = mongo.CopySession("main")
+	return err
 }

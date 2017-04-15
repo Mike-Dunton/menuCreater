@@ -14,17 +14,20 @@ func GetMainRouter() *gin.Engine {
 	// Create a default gin router
 	router := gin.Default()
 	// GET /status
-	router.GET("/recipes", recipes)
+	router.GET("/recipes", getRecipes)
 
 	// return the gin.Engine
 	return router
 }
 
-// Status middlewear
-func recipes(c *gin.Context) {
+// recipes middlewear
+func getRecipes(c *gin.Context) {
 	recipeControler := &controllers.RecipeController{}
-	recipeControler.NewController("SomeSessionStringForNow")
-
+	err := recipeControler.NewController()
+	if err != nil {
+		c.JSON(500, err.Error())
+		return
+	}
 	code, body, _ := recipeControler.ListRecipes()
 	if code != 200 {
 		log.WithFields(logrus.Fields{

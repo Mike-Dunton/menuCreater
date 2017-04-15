@@ -15,7 +15,8 @@ var log = logrus.New()
 type (
 	// buoyConfiguration contains settings for running the buoy service.
 	recipeConfiguration struct {
-		Database string
+		Database   string
+		Collection string
 	}
 )
 
@@ -24,7 +25,8 @@ var Config recipeConfiguration
 var mockRecipes = []byte("[{\"id\":\"123\",\"name\":\"Recipe1\",\"ingredients\":[{\"name\":\"Ingredient1\",\"isOptional\":false}]},{\"id\":\"321\",\"name\":\"Recipe2\",\"ingredients\":[{\"name\":\"Ingredient3\",\"isOptional\":false}]}]")
 
 func init() {
-	Config.Database = "recipes"
+	Config.Database = "menuCreater"
+	Config.Collection = "recipes"
 }
 
 // ListRecipes retrieves all Recipes
@@ -37,7 +39,7 @@ func ListRecipes(service *services.Service) (*[]recipeModel.Recipe, error) {
 		return json.Unmarshal(mockRecipes, &recipes)
 	}
 
-	if err := service.DBAction(Config.Database, "recipes", executeFunc); err != nil {
+	if err := service.DBAction(Config.Database, Config.Collection, executeFunc); err != nil {
 		if err != nil {
 			return nil, err
 		}
@@ -45,4 +47,25 @@ func ListRecipes(service *services.Service) (*[]recipeModel.Recipe, error) {
 
 	log.Info("Got Recipes")
 	return &recipes, nil
+}
+
+func AddRecipe(service *services.Service, newRecipe recipeModel.Recipe) (*recipeModel.Recipe, error) {
+	executeFunc := func(collection *mgo.Collection) error {
+		//Insert New Recipe
+		return nil
+	}
+
+	if err := service.DBAction(Config.Database, Config.Collection, executeFunc); err != nil {
+		return nil, err
+	}
+	log.Info("Recipe Added")
+	return &recipeModel.Recipe{
+		Name: "Fake",
+		Ingredients: []recipeModel.RecipeIngredients{
+			recipeModel.RecipeIngredients{
+				Name:       "FakeIngredient1",
+				IsOptional: false,
+			},
+		},
+	}, nil
 }
