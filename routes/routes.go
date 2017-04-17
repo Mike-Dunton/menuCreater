@@ -5,11 +5,21 @@ import (
 )
 
 // GetMainRouter - Handlers for route management
-func GetMainRouter() *gin.Engine {
+func GetMainRouter(authConfig AuthConfig) *gin.Engine {
 
 	// Create a default gin router
 	router := gin.Default()
+	authMiddleware := initAuthMiddleware(authConfig)
+
+	router.POST("/addUser", addUser)
+
+	authGroup := router.Group("/auth")
+	{
+		authGroup.POST("/login", authMiddleware.LoginHandler)
+	}
+
 	recipeGroup := router.Group("/recipe")
+	recipeGroup.Use(authMiddleware.MiddlewareFunc())
 	{
 		recipeGroup.GET("/", getAllRecipes)
 		recipeGroup.GET("/:id", getRecipeById)

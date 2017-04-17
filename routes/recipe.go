@@ -13,6 +13,8 @@ import (
 	"gopkg.in/validator.v2"
 )
 
+var log = logrus.New()
+
 // recipes middlewear
 func getRecipeById(c *gin.Context) {
 	recipeID := c.Param("id")
@@ -24,7 +26,7 @@ func getRecipeById(c *gin.Context) {
 			return
 		}
 		defer mongo.CloseSession(recipeControler.Service.MongoSession)
-		code, body, _ := recipeControler.GetRecipeById(recipeID)
+		code, body, _ := recipeControler.GetRecipeById(bson.ObjectIdHex(recipeID))
 		c.JSON(code, body)
 	} else {
 		c.JSON(400, "no")

@@ -16,7 +16,7 @@ type (
 )
 
 func (recipeController *RecipeController) GetRecipeById(recipeID bson.ObjectId) (int, *recipeModel.Recipe, error) {
-	recipe, err := recipe.GetRecipe(recipeID)
+	recipe, err := recipe.GetRecipe(&recipeController.Service, recipeID)
 	return 200, recipe, err
 }
 
@@ -25,10 +25,9 @@ func (recipeController *RecipeController) ListRecipes() (int, *[]recipeModel.Rec
 	return 200, recipes, err
 }
 
-func (recipeController *RecipeController) NewRecipe(newRecipe recipeModel.Recipe) (int, *[]recipeModel.Recipe, error) {
-	//TODO: AddRecipe should return the Recipe it added. Not all Recipes
-	recipes, err := recipe.AddRecipe(&recipeController.Service, newRecipe)
-	return 200, recipes, err
+func (recipeController *RecipeController) NewRecipe(newRecipe recipeModel.Recipe) (int, *recipeModel.Recipe, error) {
+	recipe, err := recipe.AddRecipe(&recipeController.Service, newRecipe)
+	return 200, recipe, err
 }
 
 func (recipe *RecipeController) NewController() (err error) {

@@ -5,3 +5,5 @@ import:
 - package: github.com/Sirupsen/logrus
 - package: github.com/gin-gonic/gin
 - package: gopkg.in/validator.v2
+- package: github.com/appleboy/gin-jwt
+- package: golang.org/x/crypto/bcrypt

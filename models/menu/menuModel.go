@@ -13,5 +13,7 @@ type MenuItem struct {
 
 type Menu struct {
 	ID        bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	StartDate time.Time     `bson:"startDate" json:"startDate"`
+	EndDate   time.Time     `bson:"startDate" json:"startDate"`
 	MenuItems []MenuItem    `bson:"menuItems" json:"menuItems" validate:"min=1"`
 }

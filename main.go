@@ -13,6 +13,7 @@ import (
 
 var log = logrus.New()
 var connectionConfig mongo.ConnectionConfig
+var authConfig routes.AuthConfig
 
 var MongoSession mgo.Session
 
@@ -22,6 +23,10 @@ func init() {
 		AuthDB:  os.Getenv("MENU_CREATOR_MONGO_AUTH_DB"),
 		User:    os.Getenv("MENU_CREATOR_MONGO_USER"),
 		Pass:    os.Getenv("MENU_CREATOR_MONGO_PASS"),
+	}
+
+	authConfig = routes.AuthConfig{
+		SecretKey: []byte(os.Getenv("MENU_CREATOR_AUTH_SECRET_KEY")),
 	}
 }
 
@@ -34,5 +39,5 @@ func main() {
 		os.Exit(1)
 	}
 	// Start server on port 8080
-	routes.GetMainRouter().Run(":8080")
+	routes.GetMainRouter(authConfig).Run(":8080")
 }

@@ -29,7 +29,7 @@ func GetRecipe(service *services.Service, recipeID bson.ObjectId) (*recipeModel.
 	var recipe recipeModel.Recipe
 	executeFunc := func(collection *mgo.Collection) error {
 		log.Info("Getting Recipe")
-		return collection.FindId(recipeID).One(recipe)
+		return collection.FindId(recipeID).One(&recipe)
 	}
 	if err := service.DBAction(Config.Database, Config.Collection, executeFunc); err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func ListRecipes(service *services.Service) (*[]recipeModel.Recipe, error) {
 	return &recipes, nil
 }
 
-func AddRecipe(service *services.Service, newRecipe recipeModel.Recipe) (*[]recipeModel.Recipe, error) {
+func AddRecipe(service *services.Service, newRecipe recipeModel.Recipe) (*recipeModel.Recipe, error) {
 	executeFunc := func(collection *mgo.Collection) error {
 		newRecipe.ID = bson.NewObjectId()
 		return collection.Insert(newRecipe)
@@ -67,5 +67,5 @@ func AddRecipe(service *services.Service, newRecipe recipeModel.Recipe) (*[]reci
 		return nil, err
 	}
 	log.Info("Recipe Added")
-	return ListRecipes(service)
+	return &newRecipe, nil
 }
