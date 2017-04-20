@@ -39,6 +39,10 @@ func addUser(c *gin.Context) {
 		c.JSON(500, err.Error())
 		return
 	}
-	code, respBody, _ := userController.NewUser(user)
+	code, respBody, err := userController.NewUser(user)
+	if err != nil {
+		c.String(code, err.Error())
+		return
+	}
 	c.JSON(code, respBody)
 }

@@ -1,5 +1,10 @@
 menuCreator CHANGELOG
 ==============================
+# 0.1.1
+
+Michael Dunton - Guarding user creation
+               - Adding a errors file
+
 # 0.1.0
 
 Michael Dunton - Adding user auth
