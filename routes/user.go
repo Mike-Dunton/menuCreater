@@ -7,6 +7,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/mike-dunton/menuCreator/controllers"
+	"github.com/mike-dunton/menuCreator/errors"
 	"github.com/mike-dunton/menuCreator/models/user"
 	"github.com/mike-dunton/menuCreator/mongo"
 	"gopkg.in/validator.v2"
@@ -21,7 +22,7 @@ func addUser(c *gin.Context) {
 		log.WithFields(logrus.Fields{
 			"err": err,
 		}).Warn("Unable to unmarshal your requst")
-		c.JSON(400, "Unable to unmarshal your requst")
+		c.String(400, "Unable to unmarshal your requst")
 		return
 	}
 	err = validator.Validate(user)
@@ -29,14 +30,14 @@ func addUser(c *gin.Context) {
 		log.WithFields(logrus.Fields{
 			"err": err,
 		}).Warn("Validation Error")
-		c.JSON(400, err.Error())
+		c.JSON(409, errors.ErrValidatingSignUp)
 		return
 	}
 	userController := &controllers.UserController{}
 	err = userController.NewController()
 	defer mongo.CloseSession(userController.Service.MongoSession)
 	if err != nil {
-		c.JSON(500, err.Error())
+		c.String(409, err.Error())
 		return
 	}
 	code, respBody, err := userController.NewUser(user)

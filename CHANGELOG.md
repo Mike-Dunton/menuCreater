@@ -1,5 +1,10 @@
 menuCreator CHANGELOG
 ==============================
+
+# 0.1.2
+
+Michael Dunton - Adding Cors
+
 # 0.1.1
 
 Michael Dunton - Guarding user creation

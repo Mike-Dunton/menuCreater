@@ -7,3 +7,4 @@ import:
 - package: gopkg.in/validator.v2
 - package: github.com/appleboy/gin-jwt
 - package: golang.org/x/crypto/bcrypt
+- package: gopkg.in/gin-contrib/cors.v1
