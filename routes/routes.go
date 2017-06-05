@@ -23,6 +23,7 @@ func GetMainRouter(authConfig AuthConfig) *gin.Engine {
 	authMiddleware := initAuthMiddleware(authConfig)
 
 	router.POST("/addUser", addUser)
+	router.POST("/validate", validateUserName)
 
 	authGroup := router.Group("/auth")
 	{

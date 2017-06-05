@@ -13,6 +13,40 @@ import (
 	"gopkg.in/validator.v2"
 )
 
+func validateUserName(c *gin.Context) {
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	var user userModel.UserValidate
+	err := json.Unmarshal(body, &user)
+	if err != nil {
+		log.WithFields(logrus.Fields{
+			"err": err,
+		}).Warn("Unable to unmarshal your requst")
+		c.String(400, "Unable to unmarshal your requst")
+		return
+	}
+	err = validator.Validate(user)
+	if err != nil {
+		log.WithFields(logrus.Fields{
+			"err": err,
+		}).Warn("Validation Error")
+		c.JSON(409, errors.ErrValidatingSignUp)
+		return
+	}
+	userController := &controllers.UserController{}
+	err = userController.NewController()
+	defer mongo.CloseSession(userController.Service.MongoSession)
+	if err != nil {
+		c.String(409, err.Error())
+		return
+	}
+	code, respBody, err := userController.ValidUser(user)
+	if err != nil {
+		c.String(code, err.Error())
+		return
+	}
+	c.JSON(code, respBody)
+}
+
 // user middlewear
 func addUser(c *gin.Context) {
 	body, _ := ioutil.ReadAll(c.Request.Body)

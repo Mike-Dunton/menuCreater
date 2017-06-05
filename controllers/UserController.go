@@ -30,6 +30,16 @@ func (userController *UserController) NewUser(newUser userModel.User) (int, *use
 	return 200, user, err
 }
 
+func (UserController *UserController) ValidUser(user userModel.UserValidate) (int, bool, error) {
+	existingUser, _ := userService.GetUserByEmail(&UserController.Service, user.Email)
+	if existingUser != nil {
+		log.Infof("User Exists")
+		return http.StatusOK, true, nil
+	} else {
+		return http.StatusOK, false, nil
+	}
+}
+
 func (recipe *UserController) NewController() (err error) {
 	recipe.Service.MongoSession, err = mongo.CopySession("main")
 	return err

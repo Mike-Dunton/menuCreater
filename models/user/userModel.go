@@ -11,3 +11,7 @@ type User struct {
 	Password  string        `bson:"password" json:"password" validate:"nonzero"`
 	CreatedAt time.Time     `bson:"created_at" json:"created_at"`
 }
+
+type UserValidate struct {
+	Email string `json:"email" validate:"nonzero,userEmail"`
+}
